@@ -1,0 +1,26 @@
+// Define variables
+$primary-color: #3498db;
+$secondary-color: #2ecc71;
+
+// Nesting example
+body {
+  font-family: Arial, sans-serif;
+  background-color: $primary-color;
+  
+  h1 {
+    color: $secondary-color;
+  }
+}
+
+// Mixin example
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  border-radius: $radius;
+}
+
+.button {
+  @include border-radius(5px);
+  background-color: $secondary-color;
+  color: white;
+}
