@@ -1,32 +1,108 @@
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background-color: $input-background;
+}
+
+.productivityTools {
+  display: flex;
+  gap: 12px;
+  padding: 8px;
+  overflow-x: auto;
+}
+
+.tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: rgba(255, 255, 255, 0.05);
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.icon {
+  font-size: 1.2rem;
+}
+
+.label {
+  font-size: 0.8rem;
+  color: $text-color-secondary;
+  white-space: nowrap;
+}
+
 .inputContainer {
   display: flex;
-  gap: 10px;
-  padding: 20px;
-  border-top: 1px solid #eee;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background-color: $input-background;
+  transition: background-color 0.2s ease;
 }
 
 .input {
   flex: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background-color: $input-background;
+  color: $text-color-primary;
+  transition: all 0.2s ease;
+  box-shadow: $input-shadow;
+  
+  &::placeholder {
+    color: $text-color-secondary;
+  }
   
   &:focus {
     outline: none;
-    border-color: #0070f3;
+    border-color: $input-border-active;
+    background-color: $input-background-active;
   }
 }
 
 .button {
-  padding: 10px 20px;
-  background: #0070f3;
-  color: white;
+  padding: 12px 24px;
+  background-color: $primary-color;
+  color: $text-color-on-primary;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: $button-shadow;
   
   &:hover {
-    background: #0061d3;
+    background-color: $primary-color-hover;
+  }
+  
+  &:disabled {
+    background-color: $primary-color-disabled;
+    cursor: not-allowed;
+  }
+}
+
+.stopButton {
+  @extend .button;
+  background-color: $error-color;
+  
+  &:hover {
+    background-color: $error-color-hover;
+  }
+  
+  &:disabled {
+    background-color: $error-color-disabled;
   }
 }

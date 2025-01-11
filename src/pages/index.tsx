@@ -14,16 +14,27 @@ const Home: NextPage = () => {
 
   return (
     <div className={styles.container}>
-      <Sidebar isOpen={isSidebarOpen} onToggle={() => setIsSidebarOpen(!isSidebarOpen)} onSelectFeature={handleSelectFeature} />
+      <header className={styles.header}>
+        <button 
+          className={styles.sidebarToggle}
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          ☰
+        </button>
+        <h1>Chat AI</h1>
+      </header>
+      
+      <Sidebar isOpen={isSidebarOpen} onToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
+      
       <main className={styles.mainContent}>
-        {selectedFeature === 'attach-file' && <div>Attach File Feature</div>}
-        {selectedFeature === 'create-image' && <div>Create Image Feature</div>}
-        {selectedFeature === 'search' && <div>Search Feature</div>}
-        {selectedFeature === 'find-on-web' && <div>Find on the Web Feature</div>}
-        {selectedFeature === 'canvas' && <div>Canvas Feature</div>}
-        {selectedFeature === 'collaborate' && <div>Collaborate on Writing and Code Feature</div>}
         <ChatContainer chatId={null} />
       </main>
+      
+      <footer className={styles.footer}>
+        <div className={styles.disclaimer}>
+          Free Research Preview. May produce inaccurate information.
+        </div>
+      </footer>
     </div>
   );
 };

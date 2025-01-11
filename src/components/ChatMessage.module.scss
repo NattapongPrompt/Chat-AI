@@ -1,31 +1,46 @@
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
+
 .message {
   max-width: 80%;
   padding: 0.75rem 1rem;
   border-radius: 1rem;
   margin-bottom: 0.5rem;
   position: relative;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 
   &.user {
-    align-self: flex-end;
-    background-color: #2563eb;
-    color: white;
+    background-color: $primary-color;
+    color: $text-color-on-primary;
+    margin-left: auto;
   }
 
   &.assistant {
     align-self: flex-start;
-    background-color: #f3f4f6;
-    color: #111827;
+    background-color: $message-background;
+    color: $text-color-primary;
+    border-radius: 12px 12px 12px 0;
+    margin-left: 20px;
+    margin-right: auto;
+    border: 1px solid $message-border;
+    
+    &:hover {
+      background-color: $message-background-hover;
+    }
   }
 
   .content {
     white-space: pre-wrap;
     word-break: break-word;
+    line-height: 1.5;
+    font-size: 0.95rem;
   }
 
   .timestamp {
     font-size: 0.75rem;
-    color: inherit;
-    opacity: 0.7;
-    margin-top: 0.25rem;
+    color: $text-color-secondary;
+    margin-top: 0.5rem;
+    text-align: right;
+    display: block;
   }
 }

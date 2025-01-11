@@ -7,3 +7,19 @@
 @mixin border-radius($radius) {
   border-radius: $radius;
 }
+
+@mixin responsive-padding {
+  padding: 16px;
+
+  @media (min-width: $breakpoint-sm) {
+    padding: 20px;
+  }
+
+  @media (min-width: $breakpoint-md) {
+    padding: 24px;
+  }
+
+  @media (min-width: $breakpoint-lg) {
+    padding: 28px;
+  }
+}

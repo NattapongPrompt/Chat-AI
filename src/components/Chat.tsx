@@ -4,26 +4,39 @@ import {
   Box, 
   TextField, 
   IconButton, 
-  Card, 
-  CardContent, 
+  Stack,
   Typography,
   useTheme,
   useMediaQuery,
-  Fade
+  Fade,
+  Button
 } from '@mui/material';
 import { IoSend } from 'react-icons/io5';
-import { ChatMessage } from '../../types/chat';
+import ChatInput from './ChatInput';
+import ChatContainer from './ChatContainer';
+import ChatMessage from './ChatMessage';
+import { Message } from '@/types/Message';
+import { MessageRole, MessageType } from '@/types/AppInterfaces';
+import { ApiError } from '@/types/ApiError';
+import Sidebar from './Sidebar';
+
+interface ApiResponse {
+  message: string;
+  timestamp: string;
+  success: boolean;
+}
 
 export default function Chat() {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -33,10 +46,13 @@ export default function Chat() {
   const handleSend = async () => {
     if (!input.trim()) return;
 
-    const userMessage: ChatMessage = {
+    const userMessage: Message = {
       id: Date.now().toString(),
-      role: 'user',
+      senderId: 'user',
+      status: 'sent',
       content: input,
+      role: MessageRole.USER,
+      type: 'text',
       timestamp: new Date()
     };
 
@@ -51,121 +67,45 @@ export default function Chat() {
         body: JSON.stringify({ message: input })
       });
 
-      const data = await response.json();
-      setIsTyping(false);
-      
-      const botMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
+      const data: ApiResponse = await response.json();
+      if (!response.ok) throw new Error(data.message);
+
+      const botMessage: Message = {
+        id: Date.now().toString(),
+        senderId: 'bot',
+        status: 'sent',
         content: data.message,
-        timestamp: new Date()
+        role: MessageRole.ASSISTANT,
+      type: 'text',
+        timestamp: new Date(data.timestamp)
       };
 
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
-      console.error('Failed to send message:', error);
+      console.error('Error:', error);
+    } finally {
       setIsTyping(false);
     }
   };
 
   return (
-    <Paper 
-      elevation={3} 
-      sx={{ 
-        height: isMobile ? '90vh' : '70vh',
-        display: 'flex', 
-        flexDirection: 'column',
-        borderRadius: theme.shape.borderRadius,
-        overflow: 'hidden',
-        background: theme.palette.background.paper,
-      }}
-    >
-      <Box sx={{ 
-        flex: 1, 
-        p: isMobile ? 1 : 2, 
-        overflow: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 2,
-        bgcolor: theme.palette.grey[100],
-      }}>
-        {messages.map((msg, index) => (
-          <Fade in={true} timeout={500} key={msg.id}>
-            <Card 
-              sx={{ 
-                maxWidth: isMobile ? '85%' : '70%',
-                alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-                bgcolor: msg.role === 'user' ? 'primary.main' : 'background.paper',
-                boxShadow: msg.role === 'user' 
-                  ? '0 4px 6px -1px rgba(37, 99, 235, 0.1)'
-                  : '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-              }}
-            >
-              <CardContent sx={{ py: 1, px: 2, '&:last-child': { pb: 1 } }}>
-                <Typography 
-                  color={msg.role === 'user' ? 'white' : 'text.primary'}
-                  sx={{ wordBreak: 'break-word' }}
-                >
-                  {msg.content}
-                </Typography>
-                <Typography 
-                  variant="caption" 
-                  color={msg.role === 'user' ? 'rgba(255,255,255,0.7)' : 'text.secondary'}
-                  sx={{ display: 'block', mt: 0.5, textAlign: msg.role === 'user' ? 'right' : 'left' }}
-                >
-                  {new Date(msg.timestamp).toLocaleTimeString()}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Fade>
-        ))}
-        {isTyping && (
-          <Card sx={{ maxWidth: '70%', alignSelf: 'flex-start' }}>
-            <CardContent>
-              <Typography>Typing...</Typography>
-            </CardContent>
-          </Card>
-        )}
-        <div ref={messagesEndRef} />
-      </Box>
-      <Box sx={{ 
-        p: isMobile ? 1 : 2, 
-        bgcolor: theme.palette.background.paper,
-        borderTop: `1px solid ${theme.palette.grey[200]}`,
-      }}>
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <TextField
-            fullWidth
-            variant="outlined"
-            size={isMobile ? "small" : "medium"}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Type your message..."
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                bgcolor: theme.palette.grey[100],
-              }
-            }}
-          />
-          <IconButton 
-            color="primary" 
-            onClick={handleSend}
-            sx={{ 
-              p: isMobile ? 1 : 2,
-              bgcolor: 'primary.main', 
-              color: 'white',
-              '&:hover': { 
-                bgcolor: 'primary.dark',
-                transform: 'scale(1.05)',
-              },
-              transition: 'all 0.2s ease-in-out',
-            }}
-          >
-            <IoSend />
-          </IconButton>
+    <Box sx={{ height: '100vh', display: 'flex' }}>
+      <Sidebar 
+        isOpen={isSidebarOpen} 
+        onToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
+      />
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            ChatGPT
+          </Typography>
+          <Typography variant="subtitle1" color="text.secondary">
+            What can I help with?
+          </Typography>
         </Box>
+        
+        <ChatContainer chatId="main-chat" />
       </Box>
-    </Paper>
+    </Box>
   );
 }

@@ -1,11 +1,54 @@
+// Responsive breakpoints
+$breakpoint-xs: 480px;
+$breakpoint-sm: 768px;
+$breakpoint-md: 1024px;
+$breakpoint-lg: 1280px;
+$breakpoint-xl: 1440px;
+
+// Media query mixins
+@mixin xs {
+  @media (max-width: $breakpoint-xs) {
+    @content;
+  }
+}
+
+@mixin sm {
+  @media (max-width: $breakpoint-sm) {
+    @content;
+  }
+}
+
+@mixin md {
+  @media (max-width: $breakpoint-md) {
+    @content;
+  }
+}
+
+@mixin lg {
+  @media (max-width: $breakpoint-lg) {
+    @content;
+  }
+}
+
+@mixin xl {
+  @media (max-width: $breakpoint-xl) {
+    @content;
+  }
+}
+
 // Color variables
-$background-color: #f7f7f8;
-$border-color: #e5e7eb;
-$text-color: #374151;
-
-// Message colors
-$user-message-bg: #2563eb;
-$assistant-message-bg: #ffffff;
-
-// Spacing
-$spacing-unit: 1rem;
+:root {
+  --chat-bg: #ffffff;
+  --background-color: #f0faf0;
+  --primary-color: #22c55e;
+  --text-color: #14532d;
+  --text-color-light: #4ade80;
+  --text-color-secondary: #86efac;
+  --container-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --scrollbar-track: #f0faf0;
+  --scrollbar-thumb: #22c55e;
+  --scrollbar-thumb-hover: #16a34a;
+  --sidebar-width: 300px;
+  --header-height: 64px;
+  --full-height: 100vh;
+}

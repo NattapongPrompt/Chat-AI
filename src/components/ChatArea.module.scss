@@ -1,11 +1,28 @@
+@import '../styles/variables.scss';
+@import '../styles/mixins.scss';
+
 .container {
   display: flex;
   flex-direction: column;
   padding: 20px;
-  background-color: #f5f5f5;
+  background-color: var(--background-color);
+  @include responsive-padding;
   border-radius: 8px;
   max-height: 80vh;
   overflow-y: auto;
+  box-shadow: var(--container-shadow);
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+  }
 }
 
 .typingIndicator {
@@ -19,7 +36,7 @@
   width: 8px;
   height: 8px;
   margin: 0 4px;
-  background-color: #666;
+  background-color: var(--text-color-secondary);
   border-radius: 50%;
   animation: bounce 1.4s infinite ease-in-out;
 }
