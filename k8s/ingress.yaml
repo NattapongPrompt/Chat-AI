@@ -31,6 +31,13 @@ spec:
             name: api-service
             port:
               number: 8000
+      - path: /pipeline
+        pathType: Prefix
+        backend:
+          service:
+            name: pipeline
+            port:
+              number: 8000
   tls:
   - hosts:
     - chat.example.com

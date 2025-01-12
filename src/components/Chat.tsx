@@ -9,7 +9,10 @@ import {
   useTheme,
   useMediaQuery,
   Fade,
-  Button
+  Button,
+  Snackbar,
+  Alert,
+  CircularProgress
 } from '@mui/material';
 import { IoSend } from 'react-icons/io5';
 import ChatInput from './ChatInput';
@@ -19,6 +22,7 @@ import { Message } from '@/types/Message';
 import { MessageRole, MessageType } from '@/types/AppInterfaces';
 import { ApiError } from '@/types/ApiError';
 import Sidebar from './Sidebar';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 interface ApiResponse {
   message: string;
@@ -27,10 +31,13 @@ interface ApiResponse {
 }
 
 export default function Chat() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useLocalStorage<Message[]>('chatMessages', []);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [messageStatus, setMessageStatus] = useState<Record<string, 'sending' | 'sent' | 'failed'>>({});
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -46,10 +53,11 @@ export default function Chat() {
   const handleSend = async () => {
     if (!input.trim()) return;
 
+    const messageId = Date.now().toString();
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: messageId,
       senderId: 'user',
-      status: 'sent',
+      status: 'sending',
       content: input,
       role: MessageRole.USER,
       type: 'text',
@@ -57,8 +65,10 @@ export default function Chat() {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    setMessageStatus(prev => ({ ...prev, [messageId]: 'sending' }));
     setInput('');
     setIsTyping(true);
+    setLoading(true);
 
     try {
       const response = await fetch('/api/chat', {
@@ -76,15 +86,64 @@ export default function Chat() {
         status: 'sent',
         content: data.message,
         role: MessageRole.ASSISTANT,
-      type: 'text',
+        type: 'text',
         timestamp: new Date(data.timestamp)
       };
 
       setMessages(prev => [...prev, botMessage]);
+      setMessageStatus(prev => ({ ...prev, [messageId]: 'sent' }));
     } catch (error) {
       console.error('Error:', error);
+      setError('Failed to send message. Please try again.');
+      setMessageStatus(prev => ({ ...prev, [messageId]: 'failed' }));
     } finally {
       setIsTyping(false);
+      setLoading(false);
+    }
+  };
+
+  const handleClearChat = () => {
+    setMessages([]);
+    setMessageStatus({});
+  };
+
+  const handleEditMessage = (messageId: string, newContent: string) => {
+    setMessages(prev => prev.map(msg => 
+      msg.id === messageId ? { ...msg, content: newContent } : msg
+    ));
+  };
+
+  const handleRetryMessage = async (messageId: string) => {
+    const message = messages.find(msg => msg.id === messageId);
+    if (!message) return;
+
+    setMessageStatus(prev => ({ ...prev, [messageId]: 'sending' }));
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: message.content })
+      });
+
+      const data: ApiResponse = await response.json();
+      if (!response.ok) throw new Error(data.message);
+
+      const botMessage: Message = {
+        id: Date.now().toString(),
+        senderId: 'bot',
+        status: 'sent',
+        content: data.message,
+        role: MessageRole.ASSISTANT,
+        type: 'text',
+        timestamp: new Date(data.timestamp)
+      };
+
+      setMessages(prev => [...prev, botMessage]);
+      setMessageStatus(prev => ({ ...prev, [messageId]: 'sent' }));
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Failed to resend message. Please try again.');
+      setMessageStatus(prev => ({ ...prev, [messageId]: 'failed' }));
     }
   };
 
@@ -93,6 +152,7 @@ export default function Chat() {
       <Sidebar 
         isOpen={isSidebarOpen} 
         onToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
+        onClearChat={handleClearChat}
       />
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
@@ -103,8 +163,31 @@ export default function Chat() {
             What can I help with?
           </Typography>
         </Box>
-        
-        <ChatContainer chatId="main-chat" />
+
+        {loading && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+            <CircularProgress size={24} />
+          </Box>
+        )}
+
+        <ChatContainer 
+          chatId="main-chat" 
+          messages={messages}
+          messageStatus={messageStatus}
+          onEditMessage={handleEditMessage}
+          onRetryMessage={handleRetryMessage}
+        />
+
+        <Snackbar
+          open={!!error}
+          autoHideDuration={6000}
+          onClose={() => setError(null)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
+          <Alert severity="error" onClose={() => setError(null)}>
+            {error}
+          </Alert>
+        </Snackbar>
       </Box>
     </Box>
   );

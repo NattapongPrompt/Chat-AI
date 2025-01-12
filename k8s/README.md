@@ -51,3 +51,37 @@ kubectl logs -f <pod-name>
 ```bash
 kubectl set image deployment/backend backend=your-registry/backend:new-version
 kubectl set image deployment/frontend frontend=your-registry/frontend:new-version
+```
+
+## Monitoring & Observability
+- Install Prometheus and Grafana:
+```bash
+helm install prometheus prometheus-community/prometheus
+helm install grafana grafana/grafana
+```
+
+- Access Grafana dashboard:
+```bash
+kubectl port-forward svc/grafana 3000:80
+```
+
+## Troubleshooting
+Common issues and solutions:
+
+1. Pod Crashes
+```bash
+kubectl describe pod <pod-name>
+kubectl logs <pod-name> --previous
+```
+
+2. Service Connection Issues
+```bash
+kubectl exec -it <pod-name> -- curl -v service-name:port
+kubectl get endpoints <service-name>
+```
+
+3. Resource Constraints
+```bash
+kubectl top pods
+kubectl top nodes
+```

@@ -1,12 +1,22 @@
 import React from 'react';
-import { Box, Typography, Paper } from '@mui/material';
-import { Message } from '../types/Message';
+import { Box, Typography, Paper, IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import { Message } from '@/types/Message';
 
 interface ChatMessageProps {
   message: Message;
+  status: 'sending' | 'sent' | 'failed';
+  onEdit: (newContent: string) => void;
+  onRetry: () => void;
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
+export default function ChatMessage({ 
+  message, 
+  status,
+  onEdit,
+  onRetry
+}: ChatMessageProps) {
   return (
     <Box 
       className={`flex flex-col mb-4 ${
@@ -24,15 +34,25 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         <Typography variant="body1" className="text-gray-800 dark:text-gray-200">
           {message.content}
         </Typography>
-        <Typography 
-          variant="caption" 
-          className="block mt-2 text-right text-gray-500 dark:text-gray-400"
-        >
-          {message.timestamp.toLocaleTimeString()}
-        </Typography>
+        <Box className="flex justify-between items-center mt-2">
+          <Typography 
+            variant="caption" 
+            className="text-gray-500 dark:text-gray-400"
+          >
+            {message.timestamp.toLocaleTimeString()}
+          </Typography>
+          {status === 'failed' && (
+            <IconButton size="small" onClick={onRetry}>
+              <RefreshIcon fontSize="small" />
+            </IconButton>
+          )}
+          {message.role === 'user' && status === 'sent' && (
+            <IconButton size="small" onClick={() => onEdit(message.content)}>
+              <EditIcon fontSize="small" />
+            </IconButton>
+          )}
+        </Box>
       </Paper>
     </Box>
   );
-};
-
-export default ChatMessage;
+}

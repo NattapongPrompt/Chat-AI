@@ -19,7 +19,7 @@ export interface Message {
   content: string;
   senderId: string;
   timestamp: Date;
-  status: 'sent' | 'delivered' | 'read';
+  status: 'sending' | 'sent' | 'delivered' | 'read';
   type: MessageType;
   role: MessageRole;
 }
@@ -42,4 +42,10 @@ export interface ApiResponse<T> {
     details?: unknown;
   };
   timestamp: Date;
+}
+
+interface SidebarProps {
+  isOpen: boolean;
+  onToggle: () => void;
+  onClearChat: () => void;
 }
