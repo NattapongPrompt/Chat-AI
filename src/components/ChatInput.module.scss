@@ -1,12 +1,12 @@
-@import '../../styles/variables.scss';
-@import '../../styles/mixins.scss';
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
 
 .container {
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding: 16px;
-  background-color: $input-background;
+  background-color: var(--input-background);
 }
 
 .productivityTools {
@@ -38,7 +38,7 @@
 
 .label {
   font-size: 0.8rem;
-  color: $text-color-secondary;
+  color: var(--text-color-secondary);
   white-space: nowrap;
 }
 
@@ -47,7 +47,7 @@
   align-items: center;
   gap: 12px;
   padding: 16px;
-  background-color: $input-background;
+  background-color: var(--input-background);
   transition: background-color 0.2s ease;
 }
 
@@ -57,52 +57,52 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   font-size: 0.95rem;
-  background-color: $input-background;
-  color: $text-color-primary;
+  background-color: var(--input-background);
+  color: var(--text-color);
   transition: all 0.2s ease;
-  box-shadow: $input-shadow;
+  box-shadow: var(--container-shadow);
   
   &::placeholder {
-    color: $text-color-secondary;
+    color: var(--text-color-secondary);
   }
   
   &:focus {
     outline: none;
-    border-color: $input-border-active;
-    background-color: $input-background-active;
+    border-color: var(--primary-color);
+    background-color: var(--input-background);
   }
 }
 
 .button {
   padding: 12px 24px;
-  background-color: $primary-color;
-  color: $text-color-on-primary;
+  background-color: var(--primary-color);
+  color: var(--text-color);
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
   transition: all 0.2s ease;
-  box-shadow: $button-shadow;
+  box-shadow: var(--container-shadow);
   
   &:hover {
-    background-color: $primary-color-hover;
+    background-color: var(--primary-color-hover);
   }
   
   &:disabled {
-    background-color: $primary-color-disabled;
+    background-color: var(--primary-color-disabled);
     cursor: not-allowed;
   }
 }
 
 .stopButton {
   @extend .button;
-  background-color: $error-color;
+  background-color: var(--error-color);
   
   &:hover {
-    background-color: $error-color-hover;
+    background-color: var(--error-color-hover);
   }
   
   &:disabled {
-    background-color: $error-color-disabled;
+    background-color: var(--error-color-disabled);
   }
 }

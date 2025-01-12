@@ -1,11 +1,11 @@
-@import '../../styles/variables.scss';
-@import '../../styles/mixins.scss';
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
 
 .chatContainer {
   display: grid;
   grid-template-columns: 300px 1fr;
   height: 100vh;
-  background: $background-color-secondary;
+  background: var(--background-color-secondary);
   transition: all 0.3s ease;
 
   @include sm {
@@ -26,16 +26,16 @@
   }
 
   &::-webkit-scrollbar-track {
-    background: $scrollbar-track;
+    background: var(--scrollbar-track);
   }
 
   &::-webkit-scrollbar-thumb {
-    background: $scrollbar-thumb;
+    background: var(--scrollbar-thumb);
     border-radius: 4px;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background: $scrollbar-thumb-hover;
+    background: var(--scrollbar-thumb-hover);
   }
   
   @include sm {
@@ -45,7 +45,7 @@
 
 .inputContainer {
   padding: 1rem;
-  background: $background-color-secondary;
+  background: var(--background-color-secondary);
   
   @include sm {
     padding: 0.5rem;

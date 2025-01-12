@@ -10,7 +10,8 @@ interface ChatAreaProps {
 
 const ChatArea: React.FC<ChatAreaProps> = ({ messages, isTyping }) => {
   return (
-    <div className={styles.container}>
+    <div className={styles.variables}>
+      <div className={styles.container}>
       {messages.map((message) => (
         <ChatMessage
           key={message.id}
@@ -25,6 +26,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({ messages, isTyping }) => {
           <div className={styles.dot}></div>
         </div>
       )}
+      </div>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import { Container, Box, Typography, CssBaseline } from '@mui/material';
-import { theme } from '../src/theme/theme';
+import theme from '../src/theme/theme';
 import Chat from '../src/components/Chat';
 import Head from 'next/head';
 

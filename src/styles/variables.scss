@@ -37,18 +37,31 @@ $breakpoint-xl: 1440px;
 }
 
 // Color variables
-:root {
-  --chat-bg: #ffffff;
-  --background-color: #f0faf0;
-  --primary-color: #22c55e;
-  --text-color: #14532d;
-  --text-color-light: #4ade80;
-  --text-color-secondary: #86efac;
-  --container-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --scrollbar-track: #f0faf0;
-  --scrollbar-thumb: #22c55e;
-  --scrollbar-thumb-hover: #16a34a;
-  --sidebar-width: 300px;
-  --header-height: 64px;
-  --full-height: 100vh;
+$primary-color: #22c55e;
+$text-color-on-primary: #ffffff;
+$message-background: #f0faf0;
+$text-color-primary: #14532d;
+$message-border: #86efac;
+$message-background-hover: #dcfce7;
+$text-color-secondary: #86efac;
+$sidebar-background: #14532d;
+$sidebar-item-hover: rgba(255, 255, 255, 0.1);
+$sidebar-item-active: rgba(255, 255, 255, 0.2);
+
+.global {
+  :root {
+    --chat-bg: #ffffff;
+    --background-color: #f0faf0;
+    --primary-color: #22c55e;
+    --text-color: #14532d;
+    --text-color-light: #4ade80;
+    --text-color-secondary: #86efac;
+    --container-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --scrollbar-track: #f0faf0;
+    --scrollbar-thumb: #22c55e;
+    --scrollbar-thumb-hover: #16a34a;
+    --sidebar-width: 300px;
+    --header-height: 64px;
+    --full-height: 100vh;
+  }
 }
